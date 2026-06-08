@@ -19,14 +19,14 @@ from rp2.abstract_country import AbstractCountry
 from rp2.rp2_main import rp2_main
 
 
-# Belgium-specific class
-class BE(AbstractCountry):
+# Luxembourg-specific class
+class LU(AbstractCountry):
     def __init__(self) -> None:
-        super().__init__("be", "eur")
+        super().__init__("lu", "eur")
 
     # Measured in days
     def get_long_term_capital_gain_period(self) -> int:
-        return 99999999999999
+        return 184
 
     # Default accounting method to use if the user doesn't specify one on the command line
     def get_default_accounting_method(self) -> str:
@@ -41,7 +41,7 @@ class BE(AbstractCountry):
         return {
             "open_positions",
             "rp2_full_report",
-            "be.tax_report_be",
+            "lu.tax_report_lu",
         }
 
     # Default language to use at report generation if the user doesn't specify it on the command line (in ISO 639-1 format)
@@ -49,6 +49,6 @@ class BE(AbstractCountry):
         return "fr"
 
 
-# BE-specific entry point
+# LU-specific entry point
 def rp2_entry() -> None:
-    rp2_main(BE())
+    rp2_main(LU())

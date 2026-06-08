@@ -76,7 +76,7 @@ class Generator(AbstractODSGenerator):
     MIN_ROWS: int = 20
     MAX_COLUMNS: int = 20
     OUTPUT_FILE: str = "tax_report_be.ods"
-
+    TEMPLATE_NAME: str = "tax_report_be"
     HEADER_ROWS = 7
 
     def generate(
@@ -90,12 +90,28 @@ class Generator(AbstractODSGenerator):
         to_date: date,
         generation_language: str,
     ) -> None:
+        output_file = self._generate(
+            country, years_2_accounting_method_names, asset_to_computed_data, output_dir_path, output_file_prefix, from_date, to_date, generation_language
+        )
+        LOGGER.info("Plugin '%s' output: %s", __name__, output_file.resolve())
+
+    def _generate(
+        self,
+        country: AbstractCountry,
+        years_2_accounting_method_names: Dict[int, str],
+        asset_to_computed_data: Dict[str, ComputedData],
+        output_dir_path: str,
+        output_file_prefix: str,
+        from_date: date,
+        to_date: date,
+        generation_language: str,
+    ) -> Path:
         row_indexes: Dict[str, int] = {sheet_name.value: self.HEADER_ROWS for sheet_name in SheetNames}
 
         if not isinstance(asset_to_computed_data, Dict):
             raise RP2TypeError(f"Parameter 'asset_to_computed_data' has non-Dict value {asset_to_computed_data}")
 
-        template_path: str = self._get_template_path("tax_report_be", country, generation_language)
+        template_path: str = self._get_template_path(self.TEMPLATE_NAME, country, generation_language)
 
         output_file: Any
         output_file = self._initialize_output_file(
@@ -114,6 +130,7 @@ class Generator(AbstractODSGenerator):
         asset: str
         computed_data: ComputedData
         total_gains: dict[str, RP2Decimal] = {t_type: ZERO for t_type in _TYPE_TO_SHEET.values()}
+        # Generate details per asset
         for asset, computed_data in asset_to_computed_data.items():
             if not isinstance(asset, str):
                 raise RP2TypeError(f"Parameter 'asset' has non-string value {asset}")
@@ -143,7 +160,7 @@ class Generator(AbstractODSGenerator):
                 row_index += 1
 
         output_file.save()
-        LOGGER.info("Plugin '%s' output: %s", __name__, Path(output_file.docname).resolve())
+        return Path(output_file.docname)
 
     def __generate(self, output_file: Any, asset: str, gain_loss_set: GainLossSet, row_indexes: Dict[str, int], total_gains: dict[str, RP2Decimal]) -> None:
         sheet: Any
