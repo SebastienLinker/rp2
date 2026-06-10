@@ -61,6 +61,8 @@ RP2 Generic supports the following features:
   * [rp2_full_report](https://github.com/eprbell/rp2/blob/main/docs/output_files.md#rp2-full-report-transparent-computation): comprehensive report (valid for any country), with complete transaction history, lot relationships/fractions and computation details;
   * [open_positions](https://github.com/eprbell/rp2/blob/main/docs/output_files.md#open-positions-report-unrealized-gains): report on assets with non-zero crypto balance (valid for any country): unrealized gains / losses, portfolio weighting, and more.
 
+Note: If your local currency is not USD, you should provide prices in the local currency in the input files, do not pay attention to the currency symbol. For some reasons (usually the templates), the output files show the dollar symbol ($) instead of the local currency symbol. Please ignore this and assume amounts to be in the local currency.
+
 ### Belgium
 RP2 support for Belgium includes the following features:
 * Belgium-specific RP2 executable: `rp2_be`.
